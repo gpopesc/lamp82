@@ -1,0 +1,6 @@
+/conf
+/data
+/mariadb
+/www
+/logs
+docker-compose.yml

@@ -1,0 +1,37 @@
+services:
+    my-app:
+        build: .
+        container_name: lamp82-system2
+        environment:
+            - TZ=${TZ}
+        ports:
+            - ${HTTPPORT}:80
+        volumes:
+            - ./www:/var/www/html
+            - ./data:/var/www/html/data
+            - ./conf:/conf
+        labels:
+            - "com.centurylinklabs.watchtower.enable=false"
+        restart: unless-stopped
+        depends_on:
+           - db
+
+    db:
+        image: mariadb:latest
+        container_name: lamp82-system2-db
+        command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+        restart: always
+        #ports:
+        #  - 3366:3306
+        volumes:
+            - ./mariadb:/var/lib/mysql:z
+        environment:
+            - MYSQL_ROOT_PASSWORD=yourpassword
+            - TZ=Europe/Bucharest
+    
+    adminer:
+        image: adminer
+        container_name: lamp82-system2-adminer
+        restart: always
+        ports:
+            - ${HTTPPORT_adminer}:8080
