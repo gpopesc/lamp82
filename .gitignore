@@ -1,7 +1,11 @@
-/conf
-/data
-/mariadb
-/www
 /logs
 docker-compose.yml
 git_instructions.txt
+conf/*
+!conf/.gitkeep
+data/*
+!data/.gitkeep
+mariadb/*
+!mariadb/.gitkeep
+www/*
+!www/.gitkeep
