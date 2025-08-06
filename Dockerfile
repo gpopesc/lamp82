@@ -31,16 +31,6 @@ RUN docker-php-ext-install \
 # Install rclone
 RUN curl https://rclone.org/install.sh | bash
 
-# RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini && \
-#     sed -i "s/^ *memory_limit.*/memory_limit = 512G/g" /usr/local/etc/php/php.ini && \
-#     sed -i "s|short_open_tag = Off|short_open_tag = On|g" /usr/local/etc/php/php.ini  && \
-#     sed -i "s|post_max_size = 8M|post_max_size = 256M|g" /usr/local/etc/php/php.ini  && \
-# 	sed -i "s|upload_max_filesize = 2M|upload_max_filesize = 256M|g" /usr/local/etc/php/php.ini  && \
-# 	sed -i 's|;date.timezone =|date.timezone = Europe/Bucharest|g' /usr/local/etc/php/php.ini  && \
-# 	sed -i "s|;opcache.enable=1|opcache.enable=1|g" /usr/local/etc/php/php.ini  && \
-# 	sed -i "s|;opcache.memory_consumption=128|opcache.memory_consumption=128|g" /usr/local/etc/php/php.ini  && \
-# 	sed -i "s|;opcache.max_accelerated_files=10000|opcache.max_accelerated_files=30000|g" /usr/local/etc/php/php.ini
-
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini && \
     sed -i \
         -e "s/^ *memory_limit.*/memory_limit = 512G/g" \
@@ -89,8 +79,8 @@ HEALTHCHECK --interval=1m --timeout=10s CMD curl --fail http://127.0.0.1:80
 RUN a2enmod rewrite && a2dismod autoindex -f
 
 WORKDIR /var/www/html
-
-COPY .htaccess /var/www/html/.htaccess
-
 EXPOSE 80
-CMD ["apache2-foreground"]
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
