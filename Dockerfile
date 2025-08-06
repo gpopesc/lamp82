@@ -1,5 +1,8 @@
 FROM php:8.2-apache
 
+# Set the Apache document root
+ENV APACHE_DOCUMENT_ROOT=/var/www/html
+
 # Install system dependencies and required PHP extensions
 RUN apt-get update && apt-get install -y \
     wget \
@@ -69,7 +72,6 @@ ENV TZ=Europe/Bucharest
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Configure Apache document root
-ENV APACHE_DOCUMENT_ROOT=/var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -78,7 +80,7 @@ HEALTHCHECK --interval=1m --timeout=10s CMD curl --fail http://127.0.0.1:80
 # Configure Apache
 RUN a2enmod rewrite && a2dismod autoindex -f
 
-WORKDIR /var/www/html
+WORKDIR ${APACHE_DOCUMENT_ROOT}
 EXPOSE 80
 
 COPY entrypoint.sh /entrypoint.sh
